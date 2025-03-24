@@ -50,7 +50,8 @@ This function will create and insert/append the elements needed for the paginati
 const addPagination = (list) => {
    const numOfPages = Math.ceil(list.length / 9);
    const linkList = document.querySelector('.link-list');
-   linkList.innerHTML = ''; // clear the link list
+   linkList.innerHTML = '';  // clear the link list
+   
    for(let i  = 1; i <= numOfPages; i++){
       const button = `
        <li>
@@ -61,12 +62,12 @@ const addPagination = (list) => {
 
    const firstButton = linkList.querySelector('button');  // select the first button and add active class
    firstButton.classList.add('active');
-   showPage(list, 1); // Display the first page initially
+   showPage(list, 1);  // Display the first page initially
 
-   linkList.addEventListener('click', (e) => {  //
+   linkList.addEventListener('click', (e) => {  
       if(e.target.tagName === 'BUTTON'){
          const activeButton = linkList.querySelector('.active');
-         if(activeButton){ // SELECTS AND CHECKS IF THERE IS AN ACTIVE BUTTON WITH THE CLASS ACTIVE IF TRUE; REMOVES IT
+         if(activeButton){   // SELECTS AND CHECKS IF THERE IS AN ACTIVE BUTTON WITH THE CLASS ACTIVE IF TRUE; REMOVES IT
             activeButton.classList.remove('active');
          }
          e.target.classList.add('active');
@@ -77,6 +78,39 @@ const addPagination = (list) => {
    
 }
 
+const inputSearch = () => {
+   const search = document.querySelector('.header');
+   const inputHTML = `
+      <label for="search" class="student-search">
+         <input id="search" placeholder="Search by name...">
+         <button type="button"><img src="img/icn-search.svg" alt="Search icon"></button>
+      </label>
+   `;
+   search.insertAdjacentHTML('beforeend', inputHTML);
+   const input = document.querySelector('#search');
+   // const button =inputHTML.querySelector('button');
+
+   input.addEventListener('keyup', () => {
+      const searchValue = input.value.toLowerCase();
+      const results = data.filter(student => {  //filter the data array 
+         const fullName = `${student.name.title} ${student.name.first} ${student.name.last}`.toLowerCase();
+         return fullName.includes(searchValue); // return the student that includes the search value
+        
+      })
+      if(results.length === 0 ){ // if no results are found
+         const studentList = document.querySelector('.student-list');
+         studentList.innerHTML = '<h1>No results found</h1>';
+         const linkList = document.querySelector('.link-list');
+         linkList.innerHTML = ''; 
+         return;
+
+      }
+      showPage(results, 1); // display the search results
+      addPagination(results); // add pagination to the search results
+   }) 
+}
+
+// Call functions
 
 addPagination(data);
-// Call functions
+inputSearch();
